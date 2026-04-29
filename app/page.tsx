@@ -1,8 +1,10 @@
 'use client';
 
-import ReactQuill from 'react-quill-new';
+import dynamic from 'next/dynamic';
 import 'react-quill-new/dist/quill.snow.css';
 import { useEditorSync } from './hooks/useEditorSync';
+
+const ReactQuill = dynamic(() => import('react-quill-new'), { ssr: false });
 
 function Editor({ value, onChange }: { value: string; onChange: (content: string) => void }) {
   return (

@@ -9,13 +9,11 @@ export function useEditorSync() {
   const [content, setContent] = useState('');
   const [isReady, setIsReady] = useState(false);
   const [sessionId, setSessionId] = useState<string | null>(null);
-  
-  // Ref for values that need to be accessed in the interval without triggering re-renders
+
   const lastSyncedContentRef = useRef<string>('');
   const currentContentRef = useRef<string>('');
   const syncInProgressRef = useRef(false);
 
-  // Initialize userId from sessionStorage or generate a new one
   const getUserId = () => {
     if (typeof window === 'undefined') return 'server-side';
     let userId = sessionStorage.getItem('inkmesh_userId');
@@ -26,14 +24,29 @@ export function useEditorSync() {
     return userId;
   };
 
-  // 1. Initialize session on mount
+  const getAuthToken = () => {
+    if (typeof window === 'undefined') return null;
+    return sessionStorage.getItem('inkmesh_authToken');
+  };
+
   useEffect(() => {
     async function initSession() {
       try {
+        const token = getAuthToken();
+        const headers: HeadersInit = {
+          'Content-Type': 'application/json',
+        };
+        if (token) {
+          headers['Authorization'] = `Bearer ${token}`;
+        }
+
         const response = await fetch(`${API_BASE_URL}/document/${DOC_ID}/session/init`, {
           method: 'POST',
+          headers,
         });
-        
+
+        console.log({ response });
+
         if (!response.ok) throw new Error('Failed to init session');
         
         const data: SessionInitResponse = await response.json();
@@ -46,7 +59,7 @@ export function useEditorSync() {
         console.log('Session initialized:', data.sessionId);
       } catch (err) {
         console.error('Initialization error:', err);
-        // Fallback for demo/development if API is not yet implemented
+
         setIsReady(true); 
       }
     }
@@ -81,10 +94,18 @@ export function useEditorSync() {
       console.log('Attempting sync...', payload);
 
       try {
+        const token = getAuthToken();
+        const headers: HeadersInit = {
+          'Content-Type': 'application/json',
+        };
+        if (token) {
+          headers['Authorization'] = `Bearer ${token}`;
+        }
+
         // Endpoint structure: /document/:docId/sync (placeholder per requirements)
         const response = await fetch(`${API_BASE_URL}/document/${DOC_ID}/sync`, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers,
           body: JSON.stringify(payload),
         });
 
