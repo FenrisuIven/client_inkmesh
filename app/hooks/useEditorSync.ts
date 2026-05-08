@@ -24,25 +24,17 @@ export function useEditorSync() {
     return userId;
   };
 
-  const getAuthToken = () => {
-    if (typeof window === 'undefined') return null;
-    return sessionStorage.getItem('inkmesh_authToken');
-  };
-
   useEffect(() => {
     async function initSession() {
       try {
-        const token = getAuthToken();
         const headers: HeadersInit = {
           'Content-Type': 'application/json',
         };
-        if (token) {
-          headers['Authorization'] = `Bearer ${token}`;
-        }
 
         const response = await fetch(`${API_BASE_URL}/document/${DOC_ID}/session/init`, {
           method: 'POST',
           headers,
+          credentials: 'include',
         });
 
         console.log({ response });
@@ -94,18 +86,15 @@ export function useEditorSync() {
       console.log('Attempting sync...', payload);
 
       try {
-        const token = getAuthToken();
         const headers: HeadersInit = {
           'Content-Type': 'application/json',
         };
-        if (token) {
-          headers['Authorization'] = `Bearer ${token}`;
-        }
 
         // Endpoint structure: /document/:docId/sync (placeholder per requirements)
         const response = await fetch(`${API_BASE_URL}/document/${DOC_ID}/sync`, {
           method: 'POST',
           headers,
+          credentials: 'include',
           body: JSON.stringify(payload),
         });
 

@@ -1,10 +1,18 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Noto_Sans } from "next/font/google";
-import "./globals.css";
+import "../globals.css";
 import { cn } from "@/lib/utils";
 import {
-  Header
-} from "@/components/header";
+  SidebarInset,
+  SidebarProvider
+} from "@/components/ui/sidebar";
+import {
+  AppSidebar
+} from "@/components/app-sidebar";
+import {
+  Button
+} from "@/components/ui/button";
+import { Header } from "@/components/header";
 
 const notoSans = Noto_Sans({subsets:['latin'],variable:'--font-sans'});
 
@@ -29,16 +37,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html
-      lang="en"
-      className={cn("h-full", "antialiased", geistSans.variable, geistMono.variable, "font-sans", notoSans.variable)}
-    >
-      <body className="min-h-full flex flex-col">
-        <Header/>
+    <SidebarProvider>
+      <AppSidebar/>
+      <SidebarInset>
         <main>
           {children}
         </main>
-      </body>
-    </html>
+      </SidebarInset>
+    </SidebarProvider>
   );
 }
