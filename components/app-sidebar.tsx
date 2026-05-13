@@ -33,7 +33,8 @@ import {
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { getMyProjects, createProject, createDocument } from "@/lib/api"
+import { getMyProjects, createProject, createDocument, getProjectDocuments } from "@/lib/api"
+import { useParams } from "next/navigation"
 
 type TreeItem = {
   name: string,
@@ -42,31 +43,11 @@ type TreeItem = {
   children?: TreeItem[]
 }
 
-const data: { tree: TreeItem[] } = {
-  tree: [
-    { 
-      name: 'Story-1', 
-      type: 'folder', 
-      id: 'aa549ee4-f37d-48f0-b1b0-05495cfb19e8',
-      children: [
-        { 
-          name: 'Story-2', 
-          type: 'folder', 
-          id: '2ac053df-7c6a-486d-a8f1-83368162d200',
-          children: [
-            { name: 'Sub-Story1', type: 'folder', id: 'cccdb7ec-828b-4242-b004-62cb2c4fd48a' }
-          ]
-        },
-        { name: 'document1', type: 'document', id: 'cccdb7ec-828b-4242-b004-62cb2c4fd48a' },
-        { name: 'document2', type: 'document', id: 'cccdb7ec-828b-4242-b004-62cb2c4fd48a' },
-        { name: 'document3dddd', type: 'document', id: 'cccdb7ec-828b-4242-b004-62cb2c4fd48a' }
-      ]
-    },
-  ],
-}
-
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const params = useParams()
+  const projectId = params.projectId as string
   const [projects, setProjects] = useState<any[]>([])
+  const [documents, setDocuments] = useState<TreeItem[]>([])
   const [isDocDialogOpen, setIsDocDialogOpen] = useState(false)
   const [selectedProjectId, setSelectedProjectId] = useState("")
   const [newDocName, setNewDocName] = useState("")
@@ -83,9 +64,32 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     }
   }
 
+  const fetchDocuments = async (pid: string) => {
+    try {
+      const data = await getProjectDocuments(pid)
+      // Map API documents to TreeItem format
+      const mappedDocs: TreeItem[] = data.map((doc: any) => ({
+        id: doc.id,
+        name: doc.name,
+        type: 'document',
+      }))
+      setDocuments(mappedDocs)
+    } catch (error) {
+      console.error("Failed to fetch documents:", error)
+    }
+  }
+
   useEffect(() => {
     fetchProjects()
   }, [])
+
+  useEffect(() => {
+    if (projectId) {
+      fetchDocuments(projectId)
+    } else {
+      setDocuments([])
+    }
+  }, [projectId])
 
   const handleCreateProject = async () => {
     const name = prompt("Enter project name:")
@@ -109,6 +113,10 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       alert("Document created successfully")
       setIsDocDialogOpen(false)
       setNewDocName("")
+      // If we are currently in the project we just added a document to, refresh the list
+      if (selectedProjectId === projectId) {
+        fetchDocuments(projectId)
+      }
     } catch (error: any) {
       alert("Failed to create document: " + error.message)
     }
@@ -184,9 +192,15 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           <SidebarGroupLabel>Documents</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {data.tree.map((item, index) => (
-                <Tree key={index} item={item} />
-              ))}
+              {documents.length > 0 ? (
+                documents.map((item, index) => (
+                  <Tree key={index} item={item} />
+                ))
+              ) : (
+                <div className="px-4 py-2 text-xs text-gray-400">
+                  {projectId ? 'No documents found' : 'Select a project to see documents'}
+                </div>
+              )}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>

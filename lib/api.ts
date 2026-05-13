@@ -35,3 +35,7 @@ export async function createDocument(data: { projectId: string; name: string }) 
     body: JSON.stringify(data),
   });
 }
+
+export async function getProjectDocuments(projectId: string) {
+  return fetchAPI(`/document/project/${projectId}`);
+}

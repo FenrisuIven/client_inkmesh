@@ -2,7 +2,7 @@
 
 import dynamic from 'next/dynamic';
 import 'react-quill-new/dist/quill.snow.css';
-import { useEditorSync } from '../hooks/useEditorSync';
+import { useEditorSync } from '../../hooks/useEditorSync';
 
 const ReactQuill = dynamic(() => import('react-quill-new'), { ssr: false });
 
