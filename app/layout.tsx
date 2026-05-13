@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils";
 import {
   Header
 } from "@/components/header";
+import { AuthProvider } from "@/hooks/use-auth";
 
 const notoSans = Noto_Sans({subsets:['latin'],variable:'--font-sans'});
 
@@ -34,10 +35,12 @@ export default function RootLayout({
       className={cn("h-full", "antialiased", geistSans.variable, geistMono.variable, "font-sans", notoSans.variable)}
     >
       <body className="min-h-full flex flex-col">
-        <Header/>
-        <main>
-          {children}
-        </main>
+        <AuthProvider>
+          <Header/>
+          <main>
+            {children}
+          </main>
+        </AuthProvider>
       </body>
     </html>
   );
