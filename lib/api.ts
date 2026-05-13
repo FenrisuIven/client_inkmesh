@@ -39,3 +39,18 @@ export async function createDocument(data: { projectId: string; name: string }) 
 export async function getProjectDocuments(projectId: string) {
   return fetchAPI(`/document/project/${projectId}`);
 }
+
+export async function getAllUsers() {
+  return fetchAPI('/users/all');
+}
+
+export async function getProjectMembers(projectId: string) {
+  return fetchAPI(`/projects/${projectId}/members`);
+}
+
+export async function addProjectMember(projectId: string, memberId: string, role: string) {
+  return fetchAPI(`/projects/${projectId}/members`, {
+    method: 'POST',
+    body: JSON.stringify({ memberId, role }),
+  });
+}

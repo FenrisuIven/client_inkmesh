@@ -39,28 +39,28 @@ export default function Home() {
   const { content, handleContentChange, isReady, sessionId } = useEditorSync(docId);
 
   return (
-    <div className="flex flex-col items-center justify-center h-screen font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 items-center w-full h-9/10 px-16 sm:items-start">
-        <header className="flex justify-between w-full items-center">
-          <div>
-            <h1 className="text-4xl font-bold">InkMesh</h1>
-            <p className="text-sm text-gray-500">Document Sync Status: {isReady ? 'Active' : 'Initializing...'}</p>
+    <div className="flex flex-col w-full h-full p-8 overflow-hidden">
+      <div className="flex justify-between items-center mb-6">
+        <div>
+          <h1 className="text-2xl font-bold">Document Editor</h1>
+          <p className="text-sm text-gray-500">{isReady ? 'Connected' : 'Initializing...'}</p>
+        </div>
+        {sessionId && (
+          <div className="text-xs bg-muted px-2 py-1 rounded">
+            Session: <span className="font-mono">{sessionId.slice(0, 8)}</span>
           </div>
-          {sessionId && (
-            <div className="text-xs bg-gray-100 px-2 py-1 rounded">
-              Session: <span className="font-mono">{sessionId.slice(0, 8)}...</span>
-            </div>
-          )}
-        </header>
+        )}
+      </div>
 
+      <div className="flex-1 min-h-0 border rounded-lg shadow-sm bg-background">
         {isReady ? (
           <Editor value={content} onChange={handleContentChange} />
         ) : (
-          <div className="flex flex-col items-center justify-center w-full h-64 border-2 border-dashed rounded-lg">
+          <div className="flex flex-col items-center justify-center h-full border-2 border-dashed rounded-lg">
             <p className="animate-pulse">Connecting to writing session...</p>
           </div>
         )}
-      </main>
+      </div>
     </div>
   );
 }
