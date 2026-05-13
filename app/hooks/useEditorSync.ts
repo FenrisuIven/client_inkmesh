@@ -61,31 +61,39 @@ export function useEditorSync(docId: string) {
     initSession();
   }, [docId]);
 
-  // 2. The 5-second sync interval
   useEffect(() => {
     if (!isReady || !sessionId || !docId) return;
 
     const intervalId = setInterval(async () => {
-      // Skip if a sync is already in progress or no changes
       if (syncInProgressRef.current) return;
-      if (currentContentRef.current === lastSyncedContentRef.current) return;
 
-      const currentContent = currentContentRef.current;
-      const lastSyncedContent = lastSyncedContentRef.current;
+      const lastSyncedContentAtStart = lastSyncedContentRef.current;
+      const currentContentAtStart = currentContentRef.current;
+      const hasChanges = currentContentAtStart !== lastSyncedContentAtStart;
 
-      const diff = calculateDiff(lastSyncedContent, currentContent);
-      
-      const payload: SyncPayload = {
-        sessionId,
-        userId: getUserId(),
-        startIndex: diff.startIndex,
-        endIndex: diff.endIndex,
-        content: diff.content,
-        changeType: 'update',
-      };
+      let payload: SyncPayload;
+      if (hasChanges) {
+        const diff = calculateDiff(lastSyncedContentAtStart, currentContentAtStart);
+        payload = {
+          sessionId,
+          userId: getUserId(),
+          startIndex: diff.startIndex,
+          endIndex: diff.endIndex,
+          content: diff.content,
+          changeType: 'update',
+        };
+      } else {
+        payload = {
+          sessionId,
+          userId: getUserId(),
+          startIndex: 0,
+          endIndex: 0,
+          content: '',
+          changeType: 'ping',
+        };
+      }
 
       syncInProgressRef.current = true;
-      console.log('Attempting sync...', payload);
 
       try {
         const headers: HeadersInit = {
@@ -100,18 +108,27 @@ export function useEditorSync(docId: string) {
         });
 
         if (response.ok) {
-          lastSyncedContentRef.current = currentContent;
-          console.log('Sync successful');
-        } else {
-          console.error('Sync failed with status:', response.status);
-          // Changes remain in currentContentRef, will be included in next cycle
+          const data = await response.json();
+          const serverContent = data.serverContent;
+
+          if (serverContent) {
+            const latestLocalContent = currentContentRef.current;
+            const unsyncedDiff = calculateDiff(lastSyncedContentAtStart, latestLocalContent);
+            const merged = serverContent.substring(0, unsyncedDiff.startIndex) + 
+                           unsyncedDiff.content + 
+                           serverContent.substring(unsyncedDiff.endIndex);
+            
+            setContent(merged);
+            lastSyncedContentRef.current = serverContent;
+            currentContentRef.current = merged;
+          }
         }
       } catch (err) {
         console.error('Network error during sync:', err);
       } finally {
         syncInProgressRef.current = false;
       }
-    }, 5000);
+    }, 2000);
 
     return () => clearInterval(intervalId);
   }, [isReady, sessionId, docId]);
