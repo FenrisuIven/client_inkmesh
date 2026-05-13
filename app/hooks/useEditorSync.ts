@@ -3,9 +3,9 @@
 import { useState, useEffect, useRef } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { calculateDiff } from '../lib/diff';
-import { DOC_ID, API_BASE_URL, SyncPayload, SessionInitResponse } from '../lib/types';
+import { API_BASE_URL, SyncPayload, SessionInitResponse } from '../lib/types';
 
-export function useEditorSync() {
+export function useEditorSync(docId: string) {
   const [content, setContent] = useState('');
   const [isReady, setIsReady] = useState(false);
   const [sessionId, setSessionId] = useState<string | null>(null);
@@ -25,13 +25,15 @@ export function useEditorSync() {
   };
 
   useEffect(() => {
+    if (!docId) return;
+
     async function initSession() {
       try {
         const headers: HeadersInit = {
           'Content-Type': 'application/json',
         };
 
-        const response = await fetch(`${API_BASE_URL}/document/${DOC_ID}/session/init`, {
+        const response = await fetch(`${API_BASE_URL}/document/${docId}/session/init`, {
           method: 'POST',
           headers,
           credentials: 'include',
@@ -57,11 +59,11 @@ export function useEditorSync() {
     }
 
     initSession();
-  }, []);
+  }, [docId]);
 
   // 2. The 5-second sync interval
   useEffect(() => {
-    if (!isReady || !sessionId) return;
+    if (!isReady || !sessionId || !docId) return;
 
     const intervalId = setInterval(async () => {
       // Skip if a sync is already in progress or no changes
@@ -90,8 +92,7 @@ export function useEditorSync() {
           'Content-Type': 'application/json',
         };
 
-        // Endpoint structure: /document/:docId/sync (placeholder per requirements)
-        const response = await fetch(`${API_BASE_URL}/document/${DOC_ID}/sync`, {
+        const response = await fetch(`${API_BASE_URL}/document/${docId}/sync`, {
           method: 'POST',
           headers,
           credentials: 'include',
@@ -113,7 +114,7 @@ export function useEditorSync() {
     }, 5000);
 
     return () => clearInterval(intervalId);
-  }, [isReady, sessionId]);
+  }, [isReady, sessionId, docId]);
 
   // Handler for Quill changes
   const handleContentChange = (newContent: string) => {

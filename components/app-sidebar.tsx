@@ -35,6 +35,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { getMyProjects, createProject, createDocument, getProjectDocuments } from "@/lib/api"
 import { useParams } from "next/navigation"
+import Link from "next/link"
 
 type TreeItem = {
   name: string,
@@ -194,7 +195,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             <SidebarMenu>
               {documents.length > 0 ? (
                 documents.map((item, index) => (
-                  <Tree key={index} item={item} />
+                  <Tree key={index} item={item} projectId={projectId} />
                 ))
               ) : (
                 <div className="px-4 py-2 text-xs text-gray-400">
@@ -210,18 +211,20 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   )
 }
 
-function Tree({ item }: { item: TreeItem }) {
+function Tree({ item, projectId }: { item: TreeItem, projectId: string }) {
   const {name, type, id, children} = item;
 
   if (type !== 'folder') {
     return (
       <SidebarMenuItem>
         <SidebarMenuButton
+          asChild
           className="data-[active=true]:bg-transparent"
-          value={id}
         >
-          <RiFileLine />
-          {name}
+          <Link href={`/dashboard/${projectId}/${id}`}>
+            <RiFileLine />
+            <span>{name}</span>
+          </Link>
         </SidebarMenuButton>
       </SidebarMenuItem>
     )
@@ -244,7 +247,7 @@ function Tree({ item }: { item: TreeItem }) {
             <CollapsibleContent>
               <SidebarMenuSub>
                 {children.map((subItem, index) => (
-                  <Tree key={index} item={subItem} />
+                  <Tree key={index} item={subItem} projectId={projectId} />
                 ))}
               </SidebarMenuSub>
             </CollapsibleContent>
