@@ -111,16 +111,19 @@ export function useEditorSync(docId: string) {
           const data = await response.json();
           const serverContent = data.serverContent;
 
-          if (serverContent) {
+          if (serverContent !== undefined) {
             const latestLocalContent = currentContentRef.current;
-            const unsyncedDiff = calculateDiff(lastSyncedContentAtStart, latestLocalContent);
-            const merged = serverContent.substring(0, unsyncedDiff.startIndex) + 
-                           unsyncedDiff.content + 
-                           serverContent.substring(unsyncedDiff.endIndex);
+            const diffDuringRequest = calculateDiff(currentContentAtStart, latestLocalContent);
             
-            setContent(merged);
+            const merged = serverContent.substring(0, diffDuringRequest.startIndex) + 
+                           diffDuringRequest.content + 
+                           serverContent.substring(diffDuringRequest.endIndex);
+            
+            if (currentContentRef.current !== merged) {
+              setContent(merged);
+              currentContentRef.current = merged;
+            }
             lastSyncedContentRef.current = serverContent;
-            currentContentRef.current = merged;
           }
         }
       } catch (err) {
@@ -133,8 +136,8 @@ export function useEditorSync(docId: string) {
     return () => clearInterval(intervalId);
   }, [isReady, sessionId, docId]);
 
-  // Handler for Quill changes
-  const handleContentChange = (newContent: string) => {
+  const handleContentChange = (newContent: string, _delta: any, source?: string) => {
+    if (source === 'api') return;
     setContent(newContent);
     currentContentRef.current = newContent;
   };

@@ -7,13 +7,13 @@ import { useParams } from 'next/navigation';
 
 const ReactQuill = dynamic(() => import('react-quill-new'), { ssr: false });
 
-function Editor({ value, onChange }: { value: string; onChange: (content: string) => void }) {
+function Editor({ value, onChange }: { value: string; onChange: (content: string, delta: any, source: string) => void }) {
   return (
     <div className="w-full h-full pb-16">
       <ReactQuill
         theme="snow"
         value={value}
-        onChange={onChange}
+        onChange={(content, delta, source) => onChange(content, delta, source)}
         style={{
           width: '100%',
           height: '100%'
