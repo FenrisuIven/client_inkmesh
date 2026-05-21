@@ -45,8 +45,7 @@ export default function CharactersPage() {
   const [characters, setCharacters] = useState<Character[]>([]);
   const [loading, setLoading] = useState(true);
   const [isCreateOpen, setIsCreateOpen] = useState(false);
-  
-  // Create Form State
+
   const [newName, setNewName] = useState("");
   const [newDescription, setNewDescription] = useState("");
   const [newIsPublic, setNewIsPublic] = useState(true);
@@ -193,8 +192,8 @@ export default function CharactersPage() {
           ) : (
             <div className="grid grid-cols-[repeat(auto-fill,minmax(180px,220px))] gap-6">
               {characters.map((char) => (
-                <Link key={char.id} href={`/characters/${userId}/${char.id}`} className="block w-full max-w-[220px] mx-auto sm:mx-0">
-                  <div className="group bg-background overflow-hidden transition-all hover:shadow-md border border-transparent hover:border-border rounded-lg shadow-sm flex flex-col h-[356px]">
+                <Link key={char.id} href={`/characters/${userId}/${char.id}`} className="block w-full max-w-55 mx-auto sm:mx-0">
+                  <div className="group bg-background overflow-hidden transition-all hover:shadow-md border border-transparent hover:border-border rounded-lg shadow-sm flex flex-col h-60">
                     {/* Polaroid Top - Image Mock */}
                     <div className="aspect-[4/3] bg-muted flex items-center justify-center overflow-hidden shrink-0">
                        <span className="text-muted-foreground/30 text-3xl font-bold uppercase">
