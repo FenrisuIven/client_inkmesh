@@ -2,6 +2,7 @@
 
 import { useParams } from 'next/navigation';
 import { ProjectMembersDialog } from '@/components/project-members-dialog';
+import { ProjectCharactersDialog } from '@/components/project-characters-dialog';
 import { Header } from '@/components/header';
 
 export default function ProjectDashboard() {
@@ -17,6 +18,7 @@ export default function ProjectDashboard() {
       
       <div className="flex gap-4">
         <ProjectMembersDialog projectId={projectId} />
+        <ProjectCharactersDialog projectId={projectId} />
       </div>
     </div>
   );

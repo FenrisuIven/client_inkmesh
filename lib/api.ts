@@ -54,3 +54,28 @@ export async function addProjectMember(projectId: string, memberId: string, role
     body: JSON.stringify({ memberId, role }),
   });
 }
+
+export async function getProjectCharacters(projectId: string) {
+  return fetchAPI(`/projects/${projectId}/characters`);
+}
+
+export async function linkCharacter(projectId: string, characterId: string) {
+  return fetchAPI(`/projects/${projectId}/characters`, {
+    method: 'POST',
+    body: JSON.stringify({ characterId }),
+  });
+}
+
+export async function unlinkCharacter(projectId: string, characterId: string) {
+  return fetchAPI(`/projects/${projectId}/characters/${characterId}`, {
+    method: 'DELETE',
+  });
+}
+
+export async function getAvailableCharacters(projectId: string) {
+  return fetchAPI(`/characters/available/projects/${projectId}`);
+}
+
+export async function getProjectsByCharacter(characterId: string) {
+  return fetchAPI(`/projects/character/${characterId}`);
+}

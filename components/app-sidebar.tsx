@@ -20,7 +20,7 @@ import {
   SidebarMenuSub,
   SidebarRail,
 } from "@/components/ui/sidebar"
-import { RiFileLine, RiArrowRightSLine, RiFolderLine, RiAddLine } from "@remixicon/react"
+import { RiFileLine, RiArrowRightSLine, RiFolderLine, RiAddLine, RiDraftLine } from "@remixicon/react"
 import {
   Dialog,
   DialogContent,
@@ -189,6 +189,29 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
+
+        <SidebarGroup>
+          <SidebarGroupLabel>Project</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {projectId ? (
+                <SidebarMenuItem>
+                  <SidebarMenuButton asChild>
+                    <Link href={`/dashboard/${projectId}/draft`}>
+                      <RiDraftLine />
+                      <span>Draft</span>
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ) : (
+                <div className="px-4 py-2 text-xs text-gray-400">
+                  Select a project
+                </div>
+              )}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+
         <SidebarGroup>
           <SidebarGroupLabel>Documents</SidebarGroupLabel>
           <SidebarGroupContent>
