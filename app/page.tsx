@@ -1,12 +1,14 @@
 'use client';
 
+import { BackgroundGradient } from "@/components/ui/gradient";
+
+
 export default function Home() {
-
   return (
-    <div className="flex flex-col items-center justify-center h-screen font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 items-center w-full h-9/10 px-16 sm:items-start">
+    <BackgroundGradient opacity={0.2}>
+      <div className="flex flex-col items-center justify-center h-screen font-[family-name:var(--font-geist-sans)]">
 
-      </main>
-    </div>
+      </div>
+    </BackgroundGradient>
   );
 }

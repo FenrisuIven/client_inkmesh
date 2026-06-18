@@ -18,7 +18,7 @@ export const Header = () => {
   const { user, isAuthenticated, isLoading } = useAuth();
 
   return (
-    <header className="flex h-12 w-full shrink-0 items-center gap-2 border-b px-4 justify-between">
+    <header className="flex h-12 w-full shrink-0 items-center gap-2 border-b-2 rounded-4xl px-4 justify-between z-1 bg-neutral-50/50 border-neutral-200/50">
       <div>
         <Link href="/dashboard" className="font-semibold">
           InkMesh

@@ -79,3 +79,13 @@ export async function getAvailableCharacters(projectId: string) {
 export async function getProjectsByCharacter(characterId: string) {
   return fetchAPI(`/projects/character/${characterId}`);
 }
+
+export async function getArchivedChatRooms(projectId: string) {
+  return fetchAPI(`/projects/${projectId}/chat-rooms`);
+}
+
+export async function deleteArchivedChatRoom(projectId: string, roomId: string) {
+  return fetchAPI(`/projects/${projectId}/chat-rooms/${roomId}`, {
+    method: 'DELETE',
+  });
+}
