@@ -34,7 +34,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { getMyProjects, createProject, createDocument, getProjectDocuments } from "@/lib/api"
-import { useParams } from "next/navigation"
+import { useParams, usePathname } from "next/navigation"
 import Link from "next/link"
 
 type TreeItem = {
@@ -52,6 +52,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const [isDocDialogOpen, setIsDocDialogOpen] = useState(false)
   const [selectedProjectId, setSelectedProjectId] = useState("")
   const [newDocName, setNewDocName] = useState("")
+  const pathname = usePathname()
 
   const fetchProjects = async () => {
     try {
@@ -188,7 +189,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           </SidebarGroupContent>
         </SidebarGroup>
 
-        <SidebarGroup>
+        <SidebarGroup hidden={pathname == "/dashboard"}>
           <SidebarGroupLabel>Project</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
@@ -210,7 +211,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           </SidebarGroupContent>
         </SidebarGroup>
 
-        <SidebarGroup>
+        <SidebarGroup hidden={pathname == "/dashboard"}>
           <SidebarGroupLabel>Documents</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>

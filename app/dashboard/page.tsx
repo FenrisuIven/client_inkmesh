@@ -4,6 +4,9 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { getMyProjects } from '@/lib/api';
 import { Header } from '@/components/header';
+import {
+  Skeleton
+} from "@/components/ui/skeleton";
 
 interface Project {
   id: string;
@@ -36,11 +39,15 @@ export default function DashboardPage() {
   };
 
   return (
-    <div className="flex flex-col h-full items-center p-6">
+    <div className="flex flex-col h-full items-center p-6 pt-10 bg-muted/30">
       <h1 className="text-2xl font-bold mb-8 w-[70%] text-left">My Projects</h1>
       
       {loading ? (
-        <div className="w-[70%] text-center mt-10">Loading projects...</div>
+        <div className="w-full flex flex-col items-center gap-4">
+          <Skeleton className="w-[70%] h-[83px]"/>
+          <Skeleton className="w-[70%] h-[83px]"/>
+          <Skeleton className="w-[70%] h-[83px]"/>
+        </div>
       ) : projects.length === 0 ? (
         <div className="w-[70%] text-center mt-10 text-muted-foreground">
           You haven't joined any projects yet.
@@ -53,7 +60,7 @@ export default function DashboardPage() {
               href={`/dashboard/${project.id}`}
               className="w-[70%] group"
             >
-              <div className="border rounded-lg p-5 flex items-center justify-between hover:bg-accent/50 transition-colors shadow-sm">
+              <div className="bg-white border-b-2 border-b-neutral-200/50 rounded-lg p-5 flex items-center justify-between hover:bg-accent/50 transition-colors shadow-md">
                 <div className="flex-1 pr-4">
                   <h2 className="font-bold text-xl group-hover:text-primary transition-colors">
                     {project.name}

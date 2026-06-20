@@ -3,6 +3,9 @@
 import type React from "react"
 import { cn } from "@/lib/utils"
 import { Shader } from "react-shaders"
+import {
+  usePathname
+} from "next/navigation";
 
 const blobShader = `
 // Helper function to calculate the influence of a single metaball
@@ -113,8 +116,10 @@ export const BackgroundGradient = ({
   frequency = 1.0,
   opacity = 1.0
 }: BackgroundGradientProps) => {
+  const pathname = usePathname();
+
   return (
-    <div className={cn("fixed inset-0 overflow-hidden bg-teal-50", className)}>
+    <div className={cn("fixed inset-0 overflow-hidden bg-teal-50", className)} key={pathname}>
 
       <Shader
         fs={blobShader}

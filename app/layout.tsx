@@ -34,7 +34,7 @@ export default function RootLayout({
       lang="en"
       className={cn("h-full", "antialiased", geistSans.variable, geistMono.variable, "font-sans", notoSans.variable)}
     >
-      <body className="min-h-full flex flex-col p-2 overflow-hidden">
+      <body className="min-h-full flex flex-col p-2! overflow-hidden bg-muted/30">
         <AuthProvider>
           <Header/>
           <main className="min-h-screen">

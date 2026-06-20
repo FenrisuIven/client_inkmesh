@@ -28,6 +28,9 @@ import {
 } from "@/components/ui/dialog";
 import { RiAddLine, RiFilterLine, RiUserAddLine } from "@remixicon/react";
 import Link from "next/link";
+import {
+  Skeleton
+} from "@/components/ui/skeleton";
 
 interface Character {
   id: string;
@@ -106,14 +109,10 @@ export default function CharactersPage() {
     }
   };
 
-  if (authLoading || loading) {
-    return <div className="flex items-center justify-center h-full p-20">Loading...</div>;
-  }
-
   return (
-    <div className="flex h-[calc(100vh-3rem)] overflow-hidden bg-muted/30">
+    <div className="flex h-[calc(100vh-3rem)] overflow-hidden bg-muted/30 py-4">
       {/* Left Sidebar - Actions */}
-      <aside className="w-64 border-r bg-background p-4 flex flex-col gap-4">
+      <aside className="w-60 border-r-2 border-b-2 bg-background p-4 flex flex-col gap-4 rounded-2xl shadow-md">
         <h2 className="text-lg font-semibold px-2 mb-2">Actions</h2>
         <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
           <DialogTrigger asChild>
@@ -181,10 +180,14 @@ export default function CharactersPage() {
         <div className="max-w-6xl mx-auto">
           <div className="flex justify-between items-center mb-6">
             <h1 className="text-2xl font-bold">Characters</h1>
-            <span className="text-sm text-muted-foreground">{characters.length} characters</span>
+            {authLoading || loading ? <Skeleton className="w-20 h-5 shadow-md"/> : <span className="text-sm text-muted-foreground">{characters.length} characters</span>}
           </div>
 
-          {characters.length === 0 ? (
+          {authLoading || loading ? <div className="grid grid-cols-[repeat(auto-fill,minmax(180px,220px))] gap-6">
+            <Skeleton className="w-[220px] h-60 shadow-md rounded-lg" />
+            <Skeleton className="w-[220px] h-60 shadow-md rounded-lg" />
+            <Skeleton className="w-[220px] h-60 shadow-md rounded-lg" />
+          </div> : characters.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-64 border-2 border-dashed rounded-xl text-muted-foreground">
               <p>You haven't created any characters yet.</p>
               <Button variant="link" onClick={() => setIsCreateOpen(true)}>Create your first one</Button>
@@ -193,7 +196,7 @@ export default function CharactersPage() {
             <div className="grid grid-cols-[repeat(auto-fill,minmax(180px,220px))] gap-6">
               {characters.map((char) => (
                 <Link key={char.id} href={`/characters/${userId}/${char.id}`} className="block w-full max-w-55 mx-auto sm:mx-0">
-                  <div className="group bg-background overflow-hidden transition-all hover:shadow-md border border-transparent hover:border-border rounded-lg shadow-sm flex flex-col h-60">
+                  <div className="group bg-background overflow-hidden transition-all hover:shadow-md border-b-2 border-neutral-50/50 hover:border-border rounded-lg shadow-md flex flex-col h-60">
                     {/* Polaroid Top - Image Mock */}
                     <div className="aspect-[4/3] bg-muted flex items-center justify-center overflow-hidden shrink-0">
                        <span className="text-muted-foreground/30 text-3xl font-bold uppercase">
@@ -216,7 +219,7 @@ export default function CharactersPage() {
       </main>
 
       {/* Right Sidebar - Mock Filters */}
-      <aside className="w-64 border-l bg-background p-4 flex flex-col gap-6">
+      <aside className="w-60 border-r-2 border-b-2 bg-background p-4 flex flex-col gap-4 rounded-2xl shadow-md">
         <div>
           <h2 className="text-lg font-semibold px-2 mb-4">Filters</h2>
           <div className="space-y-4 px-2">
@@ -229,10 +232,6 @@ export default function CharactersPage() {
               <Input disabled placeholder="20 per page" />
             </div>
           </div>
-        </div>
-
-        <div className="mt-auto p-4 bg-muted/50 rounded-xl text-xs text-muted-foreground italic">
-          Tip: You can link these characters to specific projects from the project settings.
         </div>
       </aside>
     </div>

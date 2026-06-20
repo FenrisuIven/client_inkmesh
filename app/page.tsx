@@ -11,10 +11,6 @@ import {
 import {
   API_BASE_URL
 } from "@/app/lib/types";
-import {
-  useAuth
-} from "@/hooks/use-auth";
-
 
 export default function Home() {
   return (
