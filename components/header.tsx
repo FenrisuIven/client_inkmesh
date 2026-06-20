@@ -18,10 +18,10 @@ export const Header = () => {
   const { user, isAuthenticated, isLoading } = useAuth();
 
   return (
-    <header className="flex h-12 w-full shrink-0 items-center gap-2 border-b-2 rounded-4xl px-4 justify-between z-1 bg-neutral-50/50 border-neutral-200/50">
+    <header className="flex h-12 w-full shrink-0 items-center gap-2 border-b-2 rounded-lg px-4 justify-between z-1 bg-neutral-50/50 border-neutral-200/50 shadow-md backdrop-blur-sm">
       <div>
-        <Link href="/dashboard" className="font-semibold">
-          InkMesh
+        <Link href="/" className="font-semibold">
+          Inkmesh
         </Link>
       </div>
 
@@ -49,7 +49,7 @@ export const Header = () => {
                   </DropdownMenuLabel>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem asChild>
-                    <Link href="/dashboard">Dashboard</Link>
+                    <Link href="/dashboard">Projects</Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
                     <Link href={`/characters/${user.id}`}>Characters</Link>
@@ -62,10 +62,10 @@ export const Header = () => {
               </DropdownMenu>
             ) : (
               <div className="flex gap-2">
-                <Button variant="secondary" asChild size="sm">
+                <Button variant="outline" asChild size="sm" className="shadow-sm">
                   <a href={`${API_BASE_URL}/auth/login`}>Log In</a>
                 </Button>
-                <Button asChild size="sm">
+                <Button asChild size="sm" className="shadow-sm border-0">
                   <a href={`${API_BASE_URL}/auth/login`}>Sign Up</a>
                 </Button>
               </div>

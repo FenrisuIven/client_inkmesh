@@ -136,7 +136,7 @@ export const BackgroundGradient = ({
       />
 
       {/* Content layer */}
-      {children && <div className="relative z-10 h-full w-full">{children}</div>}
+      {children && <div className="absolute inset-0 z-10 h-full w-full">{children}</div>}
     </div>
   )
 }
