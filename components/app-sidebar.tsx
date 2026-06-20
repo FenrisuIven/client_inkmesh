@@ -68,7 +68,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const fetchDocuments = async (pid: string) => {
     try {
       const data = await getProjectDocuments(pid)
-      // Map API documents to TreeItem format
       const mappedDocs: TreeItem[] = data.map((doc: any) => ({
         id: doc.id,
         name: doc.name,
@@ -114,7 +113,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       alert("Document created successfully")
       setIsDocDialogOpen(false)
       setNewDocName("")
-      // If we are currently in the project we just added a document to, refresh the list
+
       if (selectedProjectId === projectId) {
         fetchDocuments(projectId)
       }
@@ -127,7 +126,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     <Sidebar {...props}>
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel>idek at this point smth</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               <SidebarMenuItem>
@@ -229,7 +227,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
-      <SidebarRail />
     </Sidebar>
   )
 }
