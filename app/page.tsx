@@ -17,8 +17,6 @@ import {
 
 
 export default function Home() {
-  const { user, isAuthenticated, isLoading } = useAuth();
-
   return (
     <BackgroundGradient opacity={0.2}>
       <div className="flex flex-col items-center justify-center h-screen font-[family-name:var(--font-sans)] pt-16">
@@ -39,7 +37,9 @@ export default function Home() {
               <Button size="lg" className="text-lg py-6 shadow-sm border-0" asChild>
                 <a href={`${API_BASE_URL}/auth/login?redirect=characters`}>Browse Characters</a>
               </Button>
-              <Button size="lg" className="text-lg py-6 bg-white/75 backdrop-blur-md shadow-sm" variant="outline">Sign up to Inkmesh</Button>
+              <Button size="lg" className="text-lg py-6 bg-white/75 backdrop-blur-md shadow-sm" variant="outline">
+                <a href={`${API_BASE_URL}/auth/login?scope=register`}>Sign up to Inkmesh</a>
+              </Button>
             </div>
           </CardContent>
         </Card>

@@ -66,7 +66,7 @@ export const Header = () => {
                   <a href={`${API_BASE_URL}/auth/login`}>Log In</a>
                 </Button>
                 <Button asChild size="sm" className="shadow-sm border-0">
-                  <a href={`${API_BASE_URL}/auth/login`}>Sign Up</a>
+                  <a href={`${API_BASE_URL}/auth/login?scope=register`}>Sign Up</a>
                 </Button>
               </div>
             )}
