@@ -318,8 +318,10 @@ export default function CharacterDetailPage() {
             </div>
 
             <div className="flex justify-center pt-2">
-              <Button variant="outline" size="sm" className="rounded-full px-8" disabled>
-                View All & Upload
+              <Button variant="outline" size="sm" className="rounded-full px-8">
+                <Link href={`/characters/${userId}/${characterId}/gallery`}>
+                  View All & Upload
+                </Link>
               </Button>
             </div>
           </section>
