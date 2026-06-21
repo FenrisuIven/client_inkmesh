@@ -13,8 +13,8 @@ export default function DraftPage() {
   const [isChatOpen, setIsChatOpen] = useState(false);
 
   return (
-    <div className="flex-1 flex overflow-hidden relative">
-      <div className="flex-1 p-8 overflow-y-auto">
+    <div className="flex-1 flex overflow-hidden relative bg-muted/30">
+      <div className="flex-1 p-8 overflow-y-auto ">
         <DraftEditor projectId={projectId} />
       </div>
 
@@ -27,7 +27,7 @@ export default function DraftPage() {
       {!isChatOpen && (
         <Button
           onClick={() => setIsChatOpen(true)}
-          className="absolute bottom-8 right-8 rounded-full h-14 w-14 shadow-lg p-0"
+          className="absolute bottom-18 right-2 rounded-full h-14 w-14 shadow-lg p-0"
           title="Open Discussion"
         >
           <RiChat3Line className="w-6 h-6" />

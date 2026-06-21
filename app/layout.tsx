@@ -37,7 +37,7 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col p-2! overflow-hidden bg-muted/30">
         <AuthProvider>
           <Header/>
-          <main className="min-h-screen">
+          <main className="min-h-screen overflow-hidden">
             {children}
           </main>
         </AuthProvider>

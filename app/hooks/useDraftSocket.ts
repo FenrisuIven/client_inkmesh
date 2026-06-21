@@ -2,17 +2,16 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { io, Socket } from 'socket.io-client';
-import { calculateDiff } from '../lib/diff';
+import Delta from 'quill-delta';
 import { API_BASE_URL, DRAFT_EVENTS, DraftUpdatePayload } from '../lib/types';
 import { v4 as uuidv4 } from 'uuid';
 
 export function useDraftSocket(projectId: string) {
-  const [content, setContent] = useState('');
+  const [content, setContent] = useState<any>(''); // Content can be Delta (object) or string
   const [isReady, setIsReady] = useState(false);
   const socketRef = useRef<Socket | null>(null);
   
-  const lastSyncedContentRef = useRef<string>('');
-  const currentContentRef = useRef<string>('');
+  const currentDeltaRef = useRef<Delta>(new Delta());
   const userIdRef = useRef<string>('');
 
   useEffect(() => {
@@ -40,30 +39,26 @@ export function useDraftSocket(projectId: string) {
       socket.emit(DRAFT_EVENTS.JOIN, { projectId });
     });
 
-    socket.on(DRAFT_EVENTS.INITIAL_STATE, (data: { content: string }) => {
-      setContent(data.content);
-      lastSyncedContentRef.current = data.content;
-      currentContentRef.current = data.content;
+    socket.on(DRAFT_EVENTS.INITIAL_STATE, (data: { content: any }) => {
+      // Content could be received as Delta or HTML string initially
+      const delta = typeof data.content === 'string' ? new Delta([{insert: data.content}]) : new Delta(data.content);
+      currentDeltaRef.current = delta;
+      setContent(delta);
       setIsReady(true);
     });
 
     socket.on(DRAFT_EVENTS.UPDATE, (payload: DraftUpdatePayload) => {
       if (payload.userId === userIdRef.current) return;
 
-      const currentContent = currentContentRef.current;
-      const updatedContent =
-        currentContent.substring(0, payload.startIndex) +
-        payload.content +
-        currentContent.substring(payload.endIndex);
-
-      setContent(updatedContent);
-      currentContentRef.current = updatedContent;
-      lastSyncedContentRef.current = updatedContent; // In WebSockets, we treat external updates as truth
+      const incomingDelta = new Delta(payload.delta);
+      currentDeltaRef.current = currentDeltaRef.current.compose(incomingDelta);
+      
+      setContent(currentDeltaRef.current);
     });
 
     socket.on('error', (err: any) => {
       console.error('Draft socket error:', err);
-      setIsReady(true); // Stop the loader on error so user can see something happened
+      setIsReady(true); 
     });
 
     socket.on('disconnect', () => {
@@ -75,20 +70,16 @@ export function useDraftSocket(projectId: string) {
     };
   }, [projectId]);
 
-  const handleContentChange = useCallback((newContent: string) => {
-    if (newContent === currentContentRef.current) return;
+  const handleContentChange = useCallback((newContent: any, delta: Delta, source: string) => {
+    if (source !== 'user') return;
 
-    const oldContent = currentContentRef.current;
-    currentContentRef.current = newContent;
+    currentDeltaRef.current = currentDeltaRef.current.compose(delta);
     setContent(newContent);
 
     if (socketRef.current?.connected) {
-      const diff = calculateDiff(oldContent, newContent);
       const payload: DraftUpdatePayload = {
         projectId,
-        startIndex: diff.startIndex,
-        endIndex: diff.endIndex,
-        content: diff.content,
+        delta: delta.ops,
         userId: userIdRef.current,
       };
       socketRef.current.emit(DRAFT_EVENTS.UPDATE, payload);

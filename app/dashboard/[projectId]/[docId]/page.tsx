@@ -9,14 +9,14 @@ const ReactQuill = dynamic(() => import('react-quill-new'), { ssr: false });
 
 function Editor({ value, onChange }: { value: string; onChange: (content: string, delta: any, source: string) => void }) {
   return (
-    <div className="w-full h-full pb-16">
+    <div className="w-full h-[95%]">
       <ReactQuill
         theme="snow"
         value={value}
         onChange={(content, delta, source) => onChange(content, delta, source)}
         style={{
           width: '100%',
-          height: '100%'
+          height: '100%',
         }}
         modules={{
           toolbar: [
@@ -39,7 +39,7 @@ export default function Home() {
   const { content, handleContentChange, isReady, sessionId } = useEditorSync(docId);
 
   return (
-    <div className="flex flex-col w-full h-full p-8 overflow-hidden">
+    <div className="flex flex-col w-full h-[95%] p-8 overflow-hidden bg-muted/30">
       <div className="flex justify-between items-center mb-6">
         <div>
           <h1 className="text-2xl font-bold">Document Editor</h1>

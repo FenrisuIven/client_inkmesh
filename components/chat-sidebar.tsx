@@ -81,9 +81,9 @@ export function ChatSidebar({ projectId, isOpen, onClose }: ChatSidebarProps) {
   const isOwner = role === 'OWNER';
 
   return (
-    <div className="w-80 border-l bg-background flex flex-col h-full shadow-xl transition-all duration-300 ease-in-out">
+    <div className="w-80 border-l bg-background flex flex-col h-[95%] max-h-[95%] shadow-xl transition-all duration-300 ease-in-out">
       <Card className="border-none rounded-none flex flex-col h-full">
-        <CardHeader className="p-4 flex flex-row items-center justify-between border-b space-y-0">
+        <CardHeader className="px-4 flex flex-row items-center justify-between border-b space-y-0">
           <CardTitle className="text-lg font-bold flex items-center gap-2">
             <RiChat3Line className="w-5 h-5" />
             Discussion
@@ -112,12 +112,12 @@ export function ChatSidebar({ projectId, isOpen, onClose }: ChatSidebarProps) {
           </div>
         )}
 
-        <CardContent className="p-0 flex-1 overflow-hidden flex flex-col">
+        <CardContent className="p-0 flex-1 flex flex-col overflow-hidden">
           {activeTab === 'chat' ? (
             <>
               <div 
                 ref={scrollRef}
-                className="flex-1 overflow-y-auto p-4 space-y-4 min-h-0"
+                className="overflow-y-scroll max-h-[50%] min-h-[50%] p-4 space-y-4"
               >
                 {messages.length === 0 ? (
                   <div className="text-center text-muted-foreground text-sm py-8">
@@ -144,8 +144,8 @@ export function ChatSidebar({ projectId, isOpen, onClose }: ChatSidebarProps) {
                   </div>
                 )}
               </div>
-              <Separator />
-              <div className="p-4 flex gap-2">
+              <Separator className="absolute bottom-0 -translate-y-10"/>
+              <div className="px-4 pt-4 flex gap-2 absolute bottom-0 -translate-y-10">
                 <Input
                   placeholder="Type a message..."
                   value={input}
@@ -164,12 +164,12 @@ export function ChatSidebar({ projectId, isOpen, onClose }: ChatSidebarProps) {
                 <RiArchiveLine className="w-4 h-4" />
                 Past Sessions
               </h3>
-              {archivedRooms.length === 0 ? (
+              {archivedRooms.length === 0 || !archivedRooms ? (
                 <div className="text-center text-muted-foreground text-sm py-8">
                   No archived sessions found.
                 </div>
               ) : (
-                archivedRooms.map((room) => (
+                archivedRooms?.map((room) => (
                   <div key={room.id} className="p-3 border rounded-md bg-muted/30 flex justify-between items-center group">
                     <div className="flex flex-col">
                       <span className="text-xs font-medium">Session {room.id.substring(0, 8)}</span>

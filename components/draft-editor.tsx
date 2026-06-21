@@ -1,9 +1,20 @@
 'use client';
 
 import { useDraftSocket } from '@/app/hooks/useDraftSocket';
-import { Textarea } from '@/components/ui/textarea';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
+import dynamic from 'next/dynamic';
+import 'react-quill-new/dist/quill.snow.css';
+
+const ReactQuill = dynamic(
+  async () => {
+    const { default: RQ } = await import('react-quill-new');
+    return RQ;
+  },
+  {
+    ssr: false,
+    loading: () => <Skeleton className="h-[400px] w-full" />,
+  }
+);
 
 interface DraftEditorProps {
   projectId: string;
@@ -22,21 +33,34 @@ export function DraftEditor({ projectId }: DraftEditorProps) {
   }
 
   return (
-    <Card className="h-full border-none shadow-none">
-      <CardHeader className="px-0 pt-0">
-        <CardTitle className="text-2xl font-bold">Project Draft</CardTitle>
+    <div className="h-[90%] border-none shadow-none">
+      <div>
+        <p className="text-2xl font-bold">Project Draft</p>
         <p className="text-sm text-muted-foreground">
           A collaborative scratchpad for your project. Changes are synced in real-time.
         </p>
-      </CardHeader>
-      <CardContent className="px-0 pb-0">
-        <Textarea
+      </div>
+      <div className="w-full h-full pb-16">
+        <ReactQuill
+          theme="snow"
           value={content}
-          onChange={(e) => handleContentChange(e.target.value)}
-          placeholder="Start brainstorming here..."
-          className="min-h-[600px] resize-none border-none p-0 text-lg leading-relaxed focus-visible:ring-0"
+          onChange={(value, delta, source, editor) => handleContentChange(value, delta, source)}
+          style={{
+            width: '100%',
+            height: '100%'
+          }}
+          modules={{
+            toolbar: [
+              [{ 'header': [1, 2, 3, false] }],
+              ['bold', 'italic', 'underline'],
+              ['blockquote', 'code-block'],
+              [{ 'indent': '-1'}, { 'indent': '+1' }],
+              [{ 'font': [] }],
+              [{ 'align': [] }],
+            ]
+          }}
         />
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 }

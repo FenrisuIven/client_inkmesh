@@ -83,7 +83,7 @@ export default function GalleryPage() {
     }
   };
 
-  const handleImageSubmit = async (e: SubmitEvent) => {
+  const handleImageSubmit = async (e: SubmitEvent | any) => {
     e.preventDefault();
 
     const files = fileInputRef.current?.files;
