@@ -117,7 +117,7 @@ export function ChatSidebar({ projectId, isOpen, onClose }: ChatSidebarProps) {
             <>
               <div 
                 ref={scrollRef}
-                className="overflow-y-scroll max-h-[50%] min-h-[50%] p-4 space-y-4"
+                className="overflow-y-scroll max-h-[90%] min-h-[90%] p-4 space-y-4"
               >
                 {messages.length === 0 ? (
                   <div className="text-center text-muted-foreground text-sm py-8">
@@ -144,8 +144,8 @@ export function ChatSidebar({ projectId, isOpen, onClose }: ChatSidebarProps) {
                   </div>
                 )}
               </div>
-              <Separator className="absolute bottom-0 -translate-y-10"/>
-              <div className="px-4 pt-4 flex gap-2 absolute bottom-0 -translate-y-10">
+              <Separator className="absolute bottom-32 "/>
+              <div className="px-4 pt-4 flex gap-2 absolute bottom-18  w-80">
                 <Input
                   placeholder="Type a message..."
                   value={input}

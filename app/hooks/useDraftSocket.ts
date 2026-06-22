@@ -3,11 +3,19 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { io, Socket } from 'socket.io-client';
 import Delta from 'quill-delta';
+import Quill from 'quill'; 
 import { API_BASE_URL, DRAFT_EVENTS, DraftUpdatePayload } from '../lib/types';
 import { v4 as uuidv4 } from 'uuid';
 
+// Helper for Delta to HTML conversion
+const deltaToHtml = (delta: Delta): string => {
+  const tempQuill = new Quill(document.createElement('div'));
+  tempQuill.setContents(delta);
+  return tempQuill.root.innerHTML;
+};
+
 export function useDraftSocket(projectId: string) {
-  const [content, setContent] = useState<any>(''); // Content can be Delta (object) or string
+  const [content, setContent] = useState<string>(''); // Now stores HTML string
   const [isReady, setIsReady] = useState(false);
   const socketRef = useRef<Socket | null>(null);
   
@@ -43,7 +51,7 @@ export function useDraftSocket(projectId: string) {
       // Content could be received as Delta or HTML string initially
       const delta = typeof data.content === 'string' ? new Delta([{insert: data.content}]) : new Delta(data.content);
       currentDeltaRef.current = delta;
-      setContent(delta);
+      setContent(deltaToHtml(delta)); // Convert to HTML
       setIsReady(true);
     });
 
@@ -53,7 +61,7 @@ export function useDraftSocket(projectId: string) {
       const incomingDelta = new Delta(payload.delta);
       currentDeltaRef.current = currentDeltaRef.current.compose(incomingDelta);
       
-      setContent(currentDeltaRef.current);
+      setContent(deltaToHtml(currentDeltaRef.current)); // Convert to HTML
     });
 
     socket.on('error', (err: any) => {
@@ -74,7 +82,7 @@ export function useDraftSocket(projectId: string) {
     if (source !== 'user') return;
 
     currentDeltaRef.current = currentDeltaRef.current.compose(delta);
-    setContent(newContent);
+    setContent(newContent); // newContent is HTML string from ReactQuill
 
     if (socketRef.current?.connected) {
       const payload: DraftUpdatePayload = {

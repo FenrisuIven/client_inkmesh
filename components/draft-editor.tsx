@@ -4,6 +4,9 @@ import { useDraftSocket } from '@/app/hooks/useDraftSocket';
 import { Skeleton } from '@/components/ui/skeleton';
 import dynamic from 'next/dynamic';
 import 'react-quill-new/dist/quill.snow.css';
+import {
+  useEffect
+} from "react";
 
 const ReactQuill = dynamic(
   async () => {
@@ -22,6 +25,10 @@ interface DraftEditorProps {
 
 export function DraftEditor({ projectId }: DraftEditorProps) {
   const { content, handleContentChange, isReady } = useDraftSocket(projectId);
+
+  useEffect(() => {
+    console.log({content});
+  }, [content]);
 
   if (!isReady) {
     return (
